@@ -1,0 +1,28 @@
+package com.assignment.rex_assignment_server.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestClient;
+
+@Configuration
+public class SpoonacularConfig {
+
+    @Value("${spoonacular.api.base-url}")
+    private String baseUrl;
+
+    @Value("${spoonacular.api.key}")
+    private String apiKey;
+
+    @Bean
+    public RestClient spoonacularRestClient() {
+        return RestClient.builder()
+                .baseUrl(baseUrl)
+                .defaultHeader("x-api-key", apiKey)
+                .build();
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+}
