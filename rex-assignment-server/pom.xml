@@ -97,6 +97,38 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<!-- Jib - Build Docker images without Docker -->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.4</version>
+				<configuration>
+					<from>
+						<image>eclipse-temurin:21-jre-alpine</image>
+					</from>
+					<to>
+						<!-- Change to your Docker Hub username/image name -->
+						<image>docker.io/yazan15ali/recipe-api</image>
+						<tags>
+							<tag>latest</tag>
+							<tag>${project.version}</tag>
+						</tags>
+					</to>
+					<container>
+						<ports>
+							<port>4000</port>
+						</ports>
+						<environment>
+							<SPRING_PROFILES_ACTIVE>prod</SPRING_PROFILES_ACTIVE>
+						</environment>
+						<jvmFlags>
+							<jvmFlag>-Xms256m</jvmFlag>
+							<jvmFlag>-Xmx512m</jvmFlag>
+						</jvmFlags>
+						<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+					</container>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
