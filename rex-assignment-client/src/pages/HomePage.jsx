@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { SlidersHorizontal, Search } from 'lucide-react'
 import SearchBar from '../components/common/SearchBar'
 import FilterSelect from '../components/common/FilterSelect'
 import LoadingSpinner from '../components/common/LoadingSpinner'
@@ -130,15 +131,10 @@ function HomePage() {
                 aria-expanded={showFilters}
                 aria-controls="filter-panel"
               >
-                <svg
+                <SlidersHorizontal 
                   className={`w-5 h-5 transition-transform ${showFilters ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
                   aria-hidden="true"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                </svg>
+                />
                 <span className="font-medium">
                   {showFilters ? 'Hide Filters' : 'Show Filters'}
                 </span>
@@ -234,20 +230,7 @@ function HomePage() {
           {!loading && !error && !hasSearched && (
             <div className="text-center py-12">
               <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-                <svg
-                  className="w-12 h-12 text-primary"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+                <Search className="w-12 h-12 text-primary" aria-hidden="true" />
               </div>
               <h2 className="font-display text-2xl font-bold text-sage-900 dark:text-sage-50 mb-2">
                 Start Your Culinary Journey

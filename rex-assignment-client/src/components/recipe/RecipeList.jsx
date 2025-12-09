@@ -1,3 +1,4 @@
+import { Frown } from 'lucide-react'
 import RecipeCard from './RecipeCard'
 
 function RecipeList({ recipes, totalResults, currentPage = 1, recipesPerPage = 12 }) {
@@ -5,20 +6,7 @@ function RecipeList({ recipes, totalResults, currentPage = 1, recipesPerPage = 1
     return (
       <div className="text-center py-16">
         <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-sage-100 dark:bg-sage-800 flex items-center justify-center">
-          <svg
-            className="w-10 h-10 text-sage-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+          <Frown className="w-10 h-10 text-sage-400" aria-hidden="true" />
         </div>
         <h3 className="text-xl font-display font-bold text-sage-900 dark:text-sage-50 mb-2">
           No recipes found
@@ -58,7 +46,7 @@ function RecipeList({ recipes, totalResults, currentPage = 1, recipesPerPage = 1
         aria-label="Recipe search results"
       >
         {recipes.map((recipe) => (
-          <RecipeCard recipe={recipe} />
+          <RecipeCard key={recipe.id} recipe={recipe} />
         ))}
       </div>
     </div>

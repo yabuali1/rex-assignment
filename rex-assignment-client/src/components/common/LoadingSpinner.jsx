@@ -1,3 +1,5 @@
+import { Loader2 } from 'lucide-react'
+
 function LoadingSpinner({ size = 'default', message = 'Loading...' }) {
   const sizeClasses = {
     small: 'w-6 h-6',
@@ -11,8 +13,8 @@ function LoadingSpinner({ size = 'default', message = 'Loading...' }) {
       role="status"
       aria-live="polite"
     >
-      <div 
-        className={`${sizeClasses[size]} border-4 border-sage-200 dark:border-sage-700 border-t-primary rounded-full animate-spin`}
+      <Loader2 
+        className={`${sizeClasses[size]} text-primary animate-spin`}
         aria-hidden="true"
       />
       <p className="text-sage-600 dark:text-sage-400 font-medium">
@@ -24,4 +26,3 @@ function LoadingSpinner({ size = 'default', message = 'Loading...' }) {
 }
 
 export default LoadingSpinner
-
