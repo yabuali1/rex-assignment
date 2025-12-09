@@ -1,5 +1,6 @@
 package com.assignment.rex_assignment_server.service;
 
+import com.assignment.rex_assignment_server.dto.AutocompleteResult;
 import com.assignment.rex_assignment_server.dto.RecipeDetailResponse;
 import com.assignment.rex_assignment_server.dto.RecipeSearchResponse;
 
@@ -16,8 +17,7 @@ public interface RecipeService {
             String cuisine,
             String type,
             int offset,
-            int number
-    );
+            int number);
 
     /**
      * Get detailed recipe information including nutrition
@@ -28,5 +28,9 @@ public interface RecipeService {
      * Get recipe with recalculated nutrition after excluding ingredients
      */
     RecipeDetailResponse getRecipeWithExcludedIngredients(Long id, List<String> excludedIngredients);
-}
 
+    /**
+     * Get autocomplete suggestions for recipe search
+     */
+    List<AutocompleteResult> getAutocompleteSuggestions(String query, int number);
+}

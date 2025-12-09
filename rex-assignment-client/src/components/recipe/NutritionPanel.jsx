@@ -35,11 +35,6 @@ function NutritionPanel({ nutrition, hasExclusions }) {
         <h2 className="font-display text-2xl font-bold text-sage-900 dark:text-sage-50">
           Nutrition Facts
         </h2>
-        {hasExclusions && (
-          <span className="badge-accent text-xs animate-pulse">
-            Updated (ingredients excluded)
-          </span>
-        )}
       </div>
 
       {/* Main nutrients grid */}

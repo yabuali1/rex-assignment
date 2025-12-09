@@ -1,6 +1,6 @@
 import RecipeCard from './RecipeCard'
 
-function RecipeList({ recipes, totalResults }) {
+function RecipeList({ recipes, totalResults, currentPage = 1, recipesPerPage = 12 }) {
   if (!recipes || recipes.length === 0) {
     return (
       <div className="text-center py-16">
@@ -30,22 +30,35 @@ function RecipeList({ recipes, totalResults }) {
     )
   }
 
+  // Calculate display range
+  const startItem = (currentPage - 1) * recipesPerPage + 1
+  const endItem = Math.min(currentPage * recipesPerPage, totalResults)
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-6">
         <p className="text-sage-600 dark:text-sage-400">
-          Found <span className="font-semibold text-sage-900 dark:text-sage-100">{totalResults}</span> recipes
+          Showing{' '}
+          <span className="font-semibold text-sage-900 dark:text-sage-100">
+            {startItem}-{endItem}
+          </span>
+          {' '}of{' '}
+          <span className="font-semibold text-sage-900 dark:text-sage-100">
+            {totalResults}
+          </span>
+          {' '}recipes
+        </p>
+        <p className="text-sm text-sage-500 dark:text-sage-400">
+          Page {currentPage} of {Math.ceil(totalResults / recipesPerPage)}
         </p>
       </div>
-      <div 
+      <div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-stagger"
         role="list"
         aria-label="Recipe search results"
       >
         {recipes.map((recipe) => (
-          <div key={recipe.id} role="listitem">
-            <RecipeCard recipe={recipe} />
-          </div>
+          <RecipeCard recipe={recipe} />
         ))}
       </div>
     </div>
@@ -53,4 +66,3 @@ function RecipeList({ recipes, totalResults }) {
 }
 
 export default RecipeList
-

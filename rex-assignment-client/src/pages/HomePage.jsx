@@ -3,8 +3,11 @@ import SearchBar from '../components/common/SearchBar'
 import FilterSelect from '../components/common/FilterSelect'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import ErrorMessage from '../components/common/ErrorMessage'
+import Pagination from '../components/common/Pagination'
 import RecipeList from '../components/recipe/RecipeList'
 import { useRecipeSearch } from '../hooks/useRecipes'
+
+const RECIPES_PER_PAGE = 12
 
 const DIET_OPTIONS = [
   { value: 'vegetarian', label: 'Vegetarian' },
@@ -53,28 +56,42 @@ function HomePage() {
   const [cuisine, setCuisine] = useState('')
   const [type, setType] = useState('')
   const [showFilters, setShowFilters] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const { recipes, totalResults, loading, error, hasSearched, searchRecipes } = useRecipeSearch()
 
-  const handleSearch = (searchQuery) => {
-    setQuery(searchQuery)
+  const totalPages = Math.ceil(totalResults / RECIPES_PER_PAGE)
+
+  const performSearch = (searchQuery, page = 1) => {
+    const offset = (page - 1) * RECIPES_PER_PAGE
     searchRecipes({
       query: searchQuery,
       diet: diet || undefined,
       cuisine: cuisine || undefined,
       type: type || undefined,
+      offset,
+      number: RECIPES_PER_PAGE,
     })
+  }
+
+  const handleSearch = (searchQuery) => {
+    setQuery(searchQuery)
+    setCurrentPage(1) // Reset to first page on new search
+    performSearch(searchQuery, 1)
+  }
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
+    performSearch(query, page)
+    // Scroll to results section
+    window.scrollTo({ top: 400, behavior: 'smooth' })
   }
 
   // Re-search when filters change (if user has already searched)
   useEffect(() => {
     if (hasSearched) {
-      searchRecipes({
-        query,
-        diet: diet || undefined,
-        cuisine: cuisine || undefined,
-        type: type || undefined,
-      })
+      setCurrentPage(1) // Reset to first page when filters change
+      performSearch(query, 1)
     }
   }, [diet, cuisine, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -198,7 +215,20 @@ function HomePage() {
           )}
 
           {!loading && !error && hasSearched && (
-            <RecipeList recipes={recipes} totalResults={totalResults} />
+            <>
+              <RecipeList 
+                recipes={recipes} 
+                totalResults={totalResults}
+                currentPage={currentPage}
+                recipesPerPage={RECIPES_PER_PAGE}
+              />
+              
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
           )}
 
           {!loading && !error && !hasSearched && (
@@ -234,4 +264,3 @@ function HomePage() {
 }
 
 export default HomePage
-

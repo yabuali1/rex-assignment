@@ -155,4 +155,32 @@ public class RecipeServiceImpl implements RecipeService {
 
         return recipe;
     }
+
+    @Override
+    public List<AutocompleteResult> getAutocompleteSuggestions(String query, int number) {
+        log.debug("Getting autocomplete suggestions for: {}", query);
+
+        if (query == null || query.trim().isEmpty()) {
+            return List.of();
+        }
+
+        try {
+            AutocompleteResult[] results = spoonacularRestClient.get()
+                    .uri("/recipes/autocomplete?query={query}&number={number}", query, number)
+                    .retrieve()
+                    .body(AutocompleteResult[].class);
+
+            if (results == null) {
+                return List.of();
+            }
+
+            log.info("Found {} autocomplete suggestions for: {}", results.length, query);
+            return List.of(results);
+
+        } catch (RestClientException e) {
+            log.error("Error getting autocomplete suggestions: {}", e.getMessage());
+            // Return empty list instead of throwing - autocomplete should fail gracefully
+            return List.of();
+        }
+    }
 }

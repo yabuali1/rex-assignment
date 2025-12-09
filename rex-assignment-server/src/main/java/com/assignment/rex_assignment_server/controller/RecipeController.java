@@ -1,5 +1,6 @@
 package com.assignment.rex_assignment_server.controller;
 
+import com.assignment.rex_assignment_server.dto.AutocompleteResult;
 import com.assignment.rex_assignment_server.dto.RecipeDetailResponse;
 import com.assignment.rex_assignment_server.dto.RecipeSearchResponse;
 import com.assignment.rex_assignment_server.service.RecipeService;
@@ -62,7 +63,6 @@ public class RecipeController {
         log.info("Get recipe request - id: {}", id);
 
         RecipeDetailResponse response = recipeService.getRecipeById(id);
-        log.info("dfsdfsdfsfesfsfesfvsefvesgvesgse");
         return ResponseEntity.ok(response);
     }
 
@@ -83,6 +83,23 @@ public class RecipeController {
                 id, excludeIngredients);
 
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Get autocomplete suggestions for recipe search
+     * 
+     * @param query  Search query string
+     * @param number Number of suggestions to return (default 5)
+     * @return List of recipe suggestions
+     */
+    @GetMapping("/autocomplete")
+    public ResponseEntity<List<AutocompleteResult>> getAutocompleteSuggestions(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "5") int number) {
+        log.info("Autocomplete request - query: {}", query);
+
+        List<AutocompleteResult> suggestions = recipeService.getAutocompleteSuggestions(query, number);
+        return ResponseEntity.ok(suggestions);
     }
 
     /**

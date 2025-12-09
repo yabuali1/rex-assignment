@@ -40,7 +40,7 @@ export const recipeApi = {
     params.append('query', query)
     params.append('offset', offset.toString())
     params.append('number', number.toString())
-    
+
     if (diet) params.append('diet', diet)
     if (cuisine) params.append('cuisine', cuisine)
     if (type) params.append('type', type)
@@ -63,8 +63,18 @@ export const recipeApi = {
   getRecipeWithExclusions: async (id, excludedIngredients = []) => {
     const params = new URLSearchParams()
     excludedIngredients.forEach(ing => params.append('excludeIngredients', ing))
-    
+
     const response = await api.get(`/recipes/${id}/exclude?${params.toString()}`)
+    return response.data
+  },
+
+  /**
+   * Get autocomplete suggestions
+   */
+  getAutocompleteSuggestions: async (query, number = 5) => {
+    if (!query || query.trim().length < 2) return []
+
+    const response = await api.get(`/recipes/autocomplete?query=${encodeURIComponent(query)}&number=${number}`)
     return response.data
   },
 
