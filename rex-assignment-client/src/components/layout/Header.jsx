@@ -7,8 +7,8 @@ function Header({ darkMode, toggleDarkMode }) {
     <header className="sticky top-0 z-40 bg-white/80 dark:bg-sage-900/80 backdrop-blur-lg border-b border-sage-200 dark:border-sage-700">
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 md:h-20">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="flex items-center gap-3 group"
             aria-label="Recipe Finder Home"
           >
@@ -26,12 +26,6 @@ function Header({ darkMode, toggleDarkMode }) {
           </Link>
 
           <nav className="flex items-center gap-4" aria-label="Main navigation">
-            <Link 
-              to="/"
-              className="text-sage-600 dark:text-sage-300 hover:text-primary dark:hover:text-primary-light font-medium transition-colors"
-            >
-              Search
-            </Link>
             <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
           </nav>
         </div>
