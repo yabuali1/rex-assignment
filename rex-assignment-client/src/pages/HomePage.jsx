@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { SlidersHorizontal, Search } from 'lucide-react'
 import SearchBar from '../components/common/SearchBar'
 import FilterSelect from '../components/common/FilterSelect'
@@ -52,24 +53,46 @@ const TYPE_OPTIONS = [
 ]
 
 function HomePage() {
-  const [query, setQuery] = useState('')
-  const [diet, setDiet] = useState('')
-  const [cuisine, setCuisine] = useState('')
-  const [type, setType] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  // Initialize state from URL params
+  const [query, setQuery] = useState(searchParams.get('q') || '')
+  const [diet, setDiet] = useState(searchParams.get('diet') || '')
+  const [cuisine, setCuisine] = useState(searchParams.get('cuisine') || '')
+  const [type, setType] = useState(searchParams.get('type') || '')
   const [showFilters, setShowFilters] = useState(false)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page')) || 1)
 
   const { recipes, totalResults, loading, error, hasSearched, searchRecipes } = useRecipeSearch()
 
   const totalPages = Math.ceil(totalResults / RECIPES_PER_PAGE)
 
-  const performSearch = (searchQuery, page = 1) => {
+  // Update URL params
+  const updateUrlParams = (newParams) => {
+    const params = new URLSearchParams()
+
+    const q = newParams.query ?? query
+    const p = newParams.page ?? currentPage
+    const d = newParams.diet ?? diet
+    const c = newParams.cuisine ?? cuisine
+    const t = newParams.type ?? type
+
+    if (q) params.set('q', q)
+    if (p > 1) params.set('page', p.toString())
+    if (d) params.set('diet', d)
+    if (c) params.set('cuisine', c)
+    if (t) params.set('type', t)
+
+    setSearchParams(params, { replace: true })
+  }
+
+  const performSearch = (searchQuery, page = 1, filters = {}) => {
     const offset = (page - 1) * RECIPES_PER_PAGE
     searchRecipes({
       query: searchQuery,
-      diet: diet || undefined,
-      cuisine: cuisine || undefined,
-      type: type || undefined,
+      diet: filters.diet || diet || undefined,
+      cuisine: filters.cuisine || cuisine || undefined,
+      type: filters.type || type || undefined,
       offset,
       number: RECIPES_PER_PAGE,
     })
@@ -77,30 +100,55 @@ function HomePage() {
 
   const handleSearch = (searchQuery) => {
     setQuery(searchQuery)
-    setCurrentPage(1) // Reset to first page on new search
+    setCurrentPage(1)
+    updateUrlParams({ query: searchQuery, page: 1 })
     performSearch(searchQuery, 1)
   }
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
+    updateUrlParams({ page })
     performSearch(query, page)
-    // Scroll to results section
     window.scrollTo({ top: 400, behavior: 'smooth' })
   }
 
-  // Re-search when filters change (if user has already searched)
-  useEffect(() => {
+  const handleFilterChange = (filterName, value) => {
+    const newFilters = { diet, cuisine, type, [filterName]: value }
+
+    if (filterName === 'diet') setDiet(value)
+    if (filterName === 'cuisine') setCuisine(value)
+    if (filterName === 'type') setType(value)
+
+    setCurrentPage(1)
+    updateUrlParams({ [filterName]: value, page: 1 })
+
     if (hasSearched) {
-      setCurrentPage(1) // Reset to first page when filters change
-      performSearch(query, 1)
+      performSearch(query, 1, newFilters)
     }
-  }, [diet, cuisine, type]) // eslint-disable-line react-hooks/exhaustive-deps
+  }
 
   const clearFilters = () => {
     setDiet('')
     setCuisine('')
     setType('')
+    setCurrentPage(1)
+    updateUrlParams({ diet: '', cuisine: '', type: '', page: 1 })
+
+    if (hasSearched) {
+      performSearch(query, 1, { diet: '', cuisine: '', type: '' })
+    }
   }
+
+  // Load search from URL on mount
+  useEffect(() => {
+    const urlQuery = searchParams.get('q')
+    const urlPage = parseInt(searchParams.get('page')) || 1
+
+    if (urlQuery) {
+      setShowFilters(diet || cuisine || type ? true : false)
+      performSearch(urlQuery, urlPage)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const hasActiveFilters = diet || cuisine || type
 
@@ -115,10 +163,10 @@ function HomePage() {
               <span className="text-primary dark:text-primary-light">Recipe</span>
             </h1>
             <p className="text-lg md:text-xl text-sage-600 dark:text-sage-300 mb-8 animate-fade-in">
-              Discover delicious recipes with detailed nutritional information. 
+              Discover delicious recipes with detailed nutritional information.
               Search by ingredients, cuisine, or dietary preferences.
             </p>
-            
+
             <div className="animate-slide-up">
               <SearchBar onSearch={handleSearch} initialValue={query} />
             </div>
@@ -131,7 +179,7 @@ function HomePage() {
                 aria-expanded={showFilters}
                 aria-controls="filter-panel"
               >
-                <SlidersHorizontal 
+                <SlidersHorizontal
                   className={`w-5 h-5 transition-transform ${showFilters ? 'rotate-180' : ''}`}
                   aria-hidden="true"
                 />
@@ -149,9 +197,8 @@ function HomePage() {
             {/* Filters Panel */}
             <div
               id="filter-panel"
-              className={`mt-6 overflow-hidden transition-all duration-300 ${
-                showFilters ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-              }`}
+              className={`mt-6 overflow-hidden transition-all duration-300 ${showFilters ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}
             >
               <div className="card p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -159,7 +206,7 @@ function HomePage() {
                     label="Diet"
                     id="diet-filter"
                     value={diet}
-                    onChange={setDiet}
+                    onChange={(value) => handleFilterChange('diet', value)}
                     options={DIET_OPTIONS}
                     placeholder="All Diets"
                   />
@@ -167,7 +214,7 @@ function HomePage() {
                     label="Cuisine"
                     id="cuisine-filter"
                     value={cuisine}
-                    onChange={setCuisine}
+                    onChange={(value) => handleFilterChange('cuisine', value)}
                     options={CUISINE_OPTIONS}
                     placeholder="All Cuisines"
                   />
@@ -175,7 +222,7 @@ function HomePage() {
                     label="Meal Type"
                     id="type-filter"
                     value={type}
-                    onChange={setType}
+                    onChange={(value) => handleFilterChange('type', value)}
                     options={TYPE_OPTIONS}
                     placeholder="All Types"
                   />
@@ -201,24 +248,24 @@ function HomePage() {
       <section className="py-12 md:py-16" aria-live="polite">
         <div className="container-custom">
           {loading && <LoadingSpinner message="Searching recipes..." />}
-          
+
           {error && (
-            <ErrorMessage 
+            <ErrorMessage
               title="Search Failed"
-              message={error} 
-              onRetry={() => handleSearch(query)} 
+              message={error}
+              onRetry={() => handleSearch(query)}
             />
           )}
 
           {!loading && !error && hasSearched && (
             <>
-              <RecipeList 
-                recipes={recipes} 
+              <RecipeList
+                recipes={recipes}
                 totalResults={totalResults}
                 currentPage={currentPage}
                 recipesPerPage={RECIPES_PER_PAGE}
               />
-              
+
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
