@@ -129,7 +129,7 @@ function SearchBar({ onSearch, initialValue = '' }) {
           autoComplete="off"
         />
         <Search
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-sage-400"
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-subtle"
           aria-hidden="true"
         />
 
@@ -152,7 +152,7 @@ function SearchBar({ onSearch, initialValue = '' }) {
           <ul
             ref={suggestionsRef}
             id="search-suggestions"
-            className="absolute z-50 w-full mt-2 bg-white dark:bg-sage-800 rounded-xl shadow-xl border border-sage-200 dark:border-sage-700 overflow-hidden"
+            className="absolute z-50 w-full mt-2 bg-surface rounded-xl shadow-xl border-default border overflow-hidden"
             role="listbox"
           >
             {suggestions.map((suggestion, index) => (
@@ -161,8 +161,8 @@ function SearchBar({ onSearch, initialValue = '' }) {
                 role="option"
                 aria-selected={index === selectedIndex}
                 className={`flex items-center justify-between px-4 py-3 cursor-pointer transition-colors ${index === selectedIndex
-                    ? 'bg-primary/10 dark:bg-primary/20'
-                    : 'hover:bg-sage-50 dark:hover:bg-sage-700/50'
+                  ? 'bg-primary/10 dark:bg-primary-light/20'
+                  : 'hover:bg-muted'
                   }`}
               >
                 <button
@@ -170,8 +170,8 @@ function SearchBar({ onSearch, initialValue = '' }) {
                   onClick={() => handleSuggestionClick(suggestion)}
                   className="flex items-center gap-3 flex-grow text-left"
                 >
-                  <BookOpen className="w-4 h-4 text-sage-400 flex-shrink-0" aria-hidden="true" />
-                  <span className="text-sage-900 dark:text-sage-100 truncate">
+                  <BookOpen className="w-4 h-4 text-subtle flex-shrink-0" aria-hidden="true" />
+                  <span className="text-default truncate">
                     {suggestion.title}
                   </span>
                 </button>
@@ -181,15 +181,15 @@ function SearchBar({ onSearch, initialValue = '' }) {
                     e.stopPropagation()
                     handleSearchSuggestion(suggestion)
                   }}
-                  className="ml-2 p-1.5 rounded-lg hover:bg-sage-200 dark:hover:bg-sage-600 transition-colors"
+                  className="ml-2 p-1.5 rounded-lg hover:bg-interactive-hover transition-colors"
                   title="Search for this recipe"
                   aria-label={`Search for ${suggestion.title}`}
                 >
-                  <Search className="w-4 h-4 text-sage-500" />
+                  <Search className="w-4 h-4 text-subtle" />
                 </button>
               </li>
             ))}
-            <li className="px-4 py-2 text-xs text-sage-500 dark:text-sage-400 bg-sage-50 dark:bg-sage-900/50 border-t border-sage-200 dark:border-sage-700">
+            <li className="px-4 py-2 text-xs text-subtle bg-muted border-t border-default">
               Click recipe to view details • Click 🔍 to search
             </li>
           </ul>

@@ -3,53 +3,156 @@
 @tailwind utilities;
 
 @layer base {
+  /* 
+   * CSS Variables - These map to the EXACT same Tailwind sage colors
+   * Light mode uses the light sage values, dark mode uses the dark sage values
+   */
+  :root {
+    /* Page background: sage-50 in light */
+    --color-bg-page: #FAFAF8;
+    /* Surface (cards, inputs): white in light */
+    --color-bg-surface: #FFFFFF;
+    /* Muted surface: sage-100 in light */
+    --color-bg-muted: #F5F5F2;
+    /* Interactive (buttons): sage-100 in light */
+    --color-bg-interactive: #F5F5F2;
+    /* Interactive hover: sage-200 in light */
+    --color-bg-interactive-hover: #E8EDE8;
+    
+    /* Text primary: sage-900 in light */
+    --color-text: #1A1D1A;
+    /* Text muted: sage-600 in light */
+    --color-text-muted: #4A5A4A;
+    /* Text subtle: sage-500 in light */
+    --color-text-subtle: #6B7B6B;
+    /* Placeholder: sage-400 in light */
+    --color-placeholder: #9BA89B;
+    
+    /* Border primary: sage-200 in light */
+    --color-border: #E8EDE8;
+    /* Border subtle: sage-300 in light */
+    --color-border-subtle: #D4DDD4;
+    
+    /* Primary color */
+    --color-primary: #4A7C59;
+    --color-primary-dark: #3A6247;
+    --color-primary-light: #6B9B7A;
+    
+    /* Accent color */
+    --color-accent: #E07A5F;
+    --color-accent-dark: #C96A50;
+    --color-accent-light: #E8927A;
+  }
+
+  .dark {
+    /* Page background: sage-900 in dark */
+    --color-bg-page: #1A1D1A;
+    /* Surface (cards, inputs): sage-800 in dark */
+    --color-bg-surface: #252A25;
+    /* Muted surface: sage-800 in dark */
+    --color-bg-muted: #252A25;
+    /* Interactive (buttons, pagination): sage-800 in dark */
+    --color-bg-interactive: #252A25;
+    /* Interactive hover: sage-700 in dark */
+    --color-bg-interactive-hover: #3A423A;
+    
+    /* Text primary: sage-100 in dark */
+    --color-text: #F5F5F2;
+    /* Text muted: sage-400 in dark */
+    --color-text-muted: #D4DDD4;
+    /* Text subtle: sage-500 in dark */
+    --color-text-subtle: #9BA89B;
+    /* Placeholder: sage-500 in dark */
+    --color-placeholder: #9BA89B;
+    
+    /* Border primary: sage-700 in dark */
+    --color-border: #3A423A;
+    /* Border subtle: sage-600 in dark */
+    --color-border-subtle: #4A5A4A;
+    
+    /* Primary uses light variant in dark mode for contrast */
+    --color-primary: #6B9B7A;
+    --color-primary-dark: #4A7C59;
+    --color-primary-light: #7DAB8C;
+    
+    /* Accent uses light variant in dark mode for contrast */
+    --color-accent: #E8927A;
+    --color-accent-dark: #E07A5F;
+    --color-accent-light: #F0A892;
+  }
+
   html {
     scroll-behavior: smooth;
   }
   
   body {
-    @apply bg-sage-50 text-sage-900 dark:bg-sage-900 dark:text-sage-100;
+    background-color: var(--color-bg-page);
+    color: var(--color-text);
     @apply transition-colors duration-300;
   }
 
   /* Focus styles for accessibility */
   *:focus-visible {
-    @apply outline-2 outline-offset-2 outline-primary;
+    outline-color: var(--color-primary);
+    @apply outline-2 outline-offset-2;
   }
 
   /* Skip link for accessibility */
   .skip-link {
-    @apply absolute -top-10 left-4 z-50 bg-primary text-white px-4 py-2 rounded-md;
+    background-color: var(--color-primary);
+    @apply absolute -top-10 left-4 z-50 text-white px-4 py-2 rounded-md;
     @apply focus:top-4 transition-all duration-200;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary hover:bg-primary-dark text-white font-medium;
+    background-color: var(--color-primary-dark);
+    @apply text-white font-medium;
     @apply px-6 py-3 rounded-lg transition-all duration-200;
-    @apply focus:ring-2 focus:ring-primary focus:ring-offset-2;
+    @apply focus:ring-2 focus:ring-offset-2;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
     @apply active:scale-95;
   }
+  .btn-primary:hover {
+    background-color: var(--color-primary-dark);
+  }
+  .btn-primary:focus {
+    --tw-ring-color: var(--color-primary);
+  }
 
   .btn-secondary {
-    @apply bg-sage-200 dark:bg-sage-700 hover:bg-sage-300 dark:hover:bg-sage-600;
-    @apply text-sage-900 dark:text-sage-100 font-medium;
+    background-color: var(--color-bg-interactive);
+    color: var(--color-text);
+    @apply font-medium;
     @apply px-6 py-3 rounded-lg transition-all duration-200;
-    @apply focus:ring-2 focus:ring-primary focus:ring-offset-2;
+    @apply focus:ring-2 focus:ring-offset-2;
+  }
+  .btn-secondary:hover {
+    background-color: var(--color-bg-interactive-hover);
+  }
+  .btn-secondary:focus {
+    --tw-ring-color: var(--color-primary);
   }
 
   .btn-accent {
-    @apply bg-accent hover:bg-accent-dark text-white font-medium;
+    background-color: var(--color-accent);
+    @apply text-white font-medium;
     @apply px-6 py-3 rounded-lg transition-all duration-200;
-    @apply focus:ring-2 focus:ring-accent focus:ring-offset-2;
+    @apply focus:ring-2 focus:ring-offset-2;
     @apply active:scale-95;
+  }
+  .btn-accent:hover {
+    background-color: var(--color-accent-dark);
+  }
+  .btn-accent:focus {
+    --tw-ring-color: var(--color-accent);
   }
 
   .card {
-    @apply bg-white dark:bg-sage-800 rounded-xl shadow-lg;
-    @apply border border-sage-200 dark:border-sage-700;
+    background-color: var(--color-bg-surface);
+    border-color: var(--color-border);
+    @apply rounded-xl shadow-lg border;
     @apply transition-all duration-300;
   }
 
@@ -58,21 +161,26 @@
   }
 
   .input-field {
-    @apply w-full px-4 py-3 rounded-lg;
-    @apply bg-white dark:bg-sage-800;
-    @apply border border-sage-300 dark:border-sage-600;
-    @apply text-sage-900 dark:text-sage-100;
-    @apply placeholder-sage-400 dark:placeholder-sage-500;
-    @apply focus:border-primary focus:ring-2 focus:ring-primary/20;
+    background-color: var(--color-bg-surface);
+    border-color: var(--color-border-subtle);
+    color: var(--color-text);
+    @apply w-full px-4 py-3 rounded-lg border;
     @apply transition-all duration-200;
+  }
+  .input-field::placeholder {
+    color: var(--color-placeholder);
+  }
+  .input-field:focus {
+    border-color: var(--color-primary);
+    --tw-ring-color: rgba(74, 124, 89, 0.2);
+    @apply ring-2;
   }
 
   .select-field {
-    @apply w-full px-4 py-3 rounded-lg appearance-none cursor-pointer;
-    @apply bg-white dark:bg-sage-800;
-    @apply border border-sage-300 dark:border-sage-600;
-    @apply text-sage-900 dark:text-sage-100;
-    @apply focus:border-primary focus:ring-2 focus:ring-primary/20;
+    background-color: var(--color-bg-surface);
+    border-color: var(--color-border-subtle);
+    color: var(--color-text);
+    @apply w-full px-4 py-3 rounded-lg appearance-none cursor-pointer border;
     @apply transition-all duration-200;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236B7B6B'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -80,20 +188,27 @@
     background-size: 1.25rem;
     padding-right: 2.5rem;
   }
+  .select-field:focus {
+    border-color: var(--color-primary);
+    --tw-ring-color: rgba(74, 124, 89, 0.2);
+    @apply ring-2;
+  }
 
   .badge {
+    color: var(--color-primary);
     @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
-    @apply bg-primary/10 text-primary dark:bg-primary-light/20 dark:text-primary-light;
+    @apply bg-primary/10 dark:bg-primary-light/20 dark:text-primary-light;
   }
 
   .badge-accent {
+    color: var(--color-accent);
     @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
-    @apply bg-accent/10 text-accent dark:bg-accent-light/20 dark:text-accent-light;
+    @apply bg-accent/10 dark:bg-accent-light/20 dark:text-accent-light;
   }
 
   .section-title {
+    color: var(--color-text);
     @apply font-display text-3xl md:text-4xl font-bold;
-    @apply text-sage-900 dark:text-sage-50;
   }
 
   .container-custom {
@@ -105,6 +220,21 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Theme-aware utility classes */
+  .bg-page { background-color: var(--color-bg-page); }
+  .bg-surface { background-color: var(--color-bg-surface); }
+  .bg-muted { background-color: var(--color-bg-muted); }
+  .bg-interactive { background-color: var(--color-bg-interactive); }
+  .hover\:bg-interactive-hover:hover { background-color: var(--color-bg-interactive-hover); }
+  
+  .text-default { color: var(--color-text); }
+  .text-muted { color: var(--color-text-muted); }
+  .text-subtle { color: var(--color-text-subtle); }
+  
+  .border-default { border-color: var(--color-border); }
+  .border-subtle { border-color: var(--color-border-subtle); }
+  .via-border { --tw-gradient-via: var(--color-border); }
 
   .animate-stagger > * {
     animation: slideUp 0.5s ease-out backwards;
@@ -123,4 +253,3 @@
   .animate-stagger > *:nth-child(11) { animation-delay: 1.1s; }
   .animate-stagger > *:nth-child(12) { animation-delay: 1.2s; }
 }
-

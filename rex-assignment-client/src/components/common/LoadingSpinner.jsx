@@ -8,16 +8,16 @@ function LoadingSpinner({ size = 'default', message = 'Loading...' }) {
   }
 
   return (
-    <div 
+    <div
       className="flex flex-col items-center justify-center gap-4 py-12"
       role="status"
       aria-live="polite"
     >
-      <Loader2 
+      <Loader2
         className={`${sizeClasses[size]} text-primary animate-spin`}
         aria-hidden="true"
       />
-      <p className="text-sage-600 dark:text-sage-400 font-medium">
+      <p className="text-muted font-medium">
         {message}
       </p>
       <span className="sr-only">{message}</span>

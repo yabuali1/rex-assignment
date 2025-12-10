@@ -10,10 +10,10 @@ function ErrorMessage({ title = 'Error', message, onRetry }) {
       <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
         <AlertTriangle className="w-8 h-8 text-red-500" aria-hidden="true" />
       </div>
-      <h3 className="text-xl font-bold text-sage-900 dark:text-sage-50 mb-2">
+      <h3 className="text-xl font-bold text-default mb-2">
         {title}
       </h3>
-      <p className="text-sage-600 dark:text-sage-400 mb-6">
+      <p className="text-muted mb-6">
         {message}
       </p>
       {onRetry && (

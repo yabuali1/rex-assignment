@@ -32,7 +32,7 @@ function NutritionPanel({ nutrition, hasExclusions }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-display text-2xl font-bold text-sage-900 dark:text-sage-50">
+        <h2 className="font-display text-2xl font-bold text-default">
           Nutrition Facts
         </h2>
       </div>
@@ -46,10 +46,10 @@ function NutritionPanel({ nutrition, hasExclusions }) {
               }`}
           >
             <div className={`w-3 h-3 rounded-full ${nutrient.color} mx-auto mb-2`} aria-hidden="true" />
-            <p className="text-2xl font-bold text-sage-900 dark:text-sage-50">
+            <p className="text-2xl font-bold text-default">
               {Math.round(nutrient.value)}
             </p>
-            <p className="text-sm text-sage-500 dark:text-sage-400">
+            <p className="text-sm text-subtle">
               {nutrient.name}
               <span className="text-xs ml-1">{nutrient.unit}</span>
             </p>
@@ -60,13 +60,13 @@ function NutritionPanel({ nutrition, hasExclusions }) {
       {/* Detailed nutrients */}
       {detailedNutrients.length > 0 && (
         <div className="card p-4">
-          <h3 className="font-semibold text-sage-900 dark:text-sage-50 mb-4">
+          <h3 className="font-semibold text-default mb-4">
             Detailed Breakdown
           </h3>
           <div className="space-y-3">
             {detailedNutrients.map((nutrient, index) => (
               <div key={index} className="flex items-center justify-between">
-                <span className="text-sage-600 dark:text-sage-400 text-sm">
+                <span className="text-muted text-sm">
                   {nutrient.name}
                 </span>
                 <div className="flex items-center gap-3">
@@ -77,7 +77,7 @@ function NutritionPanel({ nutrition, hasExclusions }) {
                       aria-hidden="true"
                     />
                   </div>
-                  <span className="text-sm font-medium text-sage-900 dark:text-sage-100 min-w-[80px] text-right">
+                  <span className="text-sm font-medium text-default min-w-[80px] text-right">
                     {Math.round(nutrient.amount)} {nutrient.unit}
                   </span>
                 </div>

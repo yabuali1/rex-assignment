@@ -4,7 +4,7 @@ import ThemeToggle from '../common/ThemeToggle'
 
 function Header({ darkMode, toggleDarkMode }) {
   return (
-    <header className="sticky top-0 z-40 bg-white/80 dark:bg-sage-900/80 backdrop-blur-lg border-b border-sage-200 dark:border-sage-700">
+    <header className="sticky top-0 z-40 bg-white/80 dark:bg-sage-900/80 backdrop-blur-lg border-b border-default">
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 md:h-20">
           <Link
@@ -16,10 +16,10 @@ function Header({ darkMode, toggleDarkMode }) {
               <BookOpen className="w-6 h-6 text-white" aria-hidden="true" />
             </div>
             <div>
-              <span className="font-display text-xl font-bold text-sage-900 dark:text-sage-50">
+              <span className="font-display text-xl font-bold text-default">
                 Recipe Finder
               </span>
-              <span className="hidden sm:block text-xs text-sage-500 dark:text-sage-400">
+              <span className="hidden sm:block text-xs text-subtle">
                 Discover delicious recipes
               </span>
             </div>

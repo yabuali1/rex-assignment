@@ -158,11 +158,11 @@ function HomePage() {
       <section className="relative bg-gradient-to-br from-primary/10 via-sage-50 to-accent/10 dark:from-primary/20 dark:via-sage-900 dark:to-accent/20 py-16 md:py-24">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-sage-900 dark:text-sage-50 mb-6 animate-fade-in">
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-default mb-6 animate-fade-in">
               Find Your Perfect{' '}
               <span className="text-primary dark:text-primary-light">Recipe</span>
             </h1>
-            <p className="text-lg md:text-xl text-sage-600 dark:text-sage-300 mb-8 animate-fade-in">
+            <p className="text-lg md:text-xl text-muted mb-8 animate-fade-in">
               Discover delicious recipes with detailed nutritional information.
               Search by ingredients, cuisine, or dietary preferences.
             </p>
@@ -175,7 +175,7 @@ function HomePage() {
             <div className="mt-6">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="inline-flex items-center gap-2 text-sage-600 dark:text-sage-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+                className="inline-flex items-center gap-2 text-muted hover:text-primary dark:hover:text-primary-light transition-colors"
                 aria-expanded={showFilters}
                 aria-controls="filter-panel"
               >
@@ -241,7 +241,7 @@ function HomePage() {
         </div>
 
         {/* Decorative elements */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-sage-300 dark:via-sage-700 to-transparent" aria-hidden="true" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" aria-hidden="true" />
       </section>
 
       {/* Results Section */}
@@ -279,10 +279,10 @@ function HomePage() {
               <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
                 <Search className="w-12 h-12 text-primary" aria-hidden="true" />
               </div>
-              <h2 className="font-display text-2xl font-bold text-sage-900 dark:text-sage-50 mb-2">
+              <h2 className="font-display text-2xl font-bold text-default mb-2">
                 Start Your Culinary Journey
               </h2>
-              <p className="text-sage-600 dark:text-sage-400 max-w-md mx-auto">
+              <p className="text-subtle max-w-md mx-auto">
                 Search for any recipe or ingredient above to discover amazing dishes with detailed nutritional information.
               </p>
             </div>

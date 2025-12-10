@@ -3,7 +3,7 @@ function FilterSelect({ label, id, value, onChange, options, placeholder }) {
     <div className="flex flex-col gap-1.5">
       <label 
         htmlFor={id} 
-        className="text-sm font-medium text-sage-700 dark:text-sage-300"
+        className="text-sm font-medium text-muted"
       >
         {label}
       </label>
@@ -26,4 +26,3 @@ function FilterSelect({ label, id, value, onChange, options, placeholder }) {
 }
 
 export default FilterSelect
-

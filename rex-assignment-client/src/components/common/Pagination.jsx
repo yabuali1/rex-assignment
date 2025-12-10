@@ -34,7 +34,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="p-2 rounded-lg bg-sage-100 dark:bg-sage-800 hover:bg-sage-200 dark:hover:bg-sage-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="p-2 rounded-lg bg-interactive hover:bg-interactive-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label="Go to previous page"
       >
         <ChevronLeft className="w-5 h-5" aria-hidden="true" />
@@ -45,13 +45,13 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
         <>
           <button
             onClick={() => onPageChange(1)}
-            className="w-10 h-10 rounded-lg bg-sage-100 dark:bg-sage-800 hover:bg-sage-200 dark:hover:bg-sage-700 transition-colors font-medium"
+            className="w-10 h-10 rounded-lg bg-interactive hover:bg-interactive-hover transition-colors font-medium"
             aria-label="Go to page 1"
           >
             1
           </button>
           {pageNumbers[0] > 2 && (
-            <span className="px-2 text-sage-400" aria-hidden="true">...</span>
+            <span className="px-2 text-subtle" aria-hidden="true">...</span>
           )}
         </>
       )}
@@ -64,7 +64,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
           className={`w-10 h-10 rounded-lg font-medium transition-colors ${
             page === currentPage
               ? 'bg-primary text-white'
-              : 'bg-sage-100 dark:bg-sage-800 hover:bg-sage-200 dark:hover:bg-sage-700'
+              : 'bg-interactive hover:bg-interactive-hover'
           }`}
           aria-label={`Go to page ${page}`}
           aria-current={page === currentPage ? 'page' : undefined}
@@ -77,11 +77,11 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
       {pageNumbers[pageNumbers.length - 1] < totalPages && (
         <>
           {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-            <span className="px-2 text-sage-400" aria-hidden="true">...</span>
+            <span className="px-2 text-subtle" aria-hidden="true">...</span>
           )}
           <button
             onClick={() => onPageChange(totalPages)}
-            className="w-10 h-10 rounded-lg bg-sage-100 dark:bg-sage-800 hover:bg-sage-200 dark:hover:bg-sage-700 transition-colors font-medium"
+            className="w-10 h-10 rounded-lg bg-interactive hover:bg-interactive-hover transition-colors font-medium"
             aria-label={`Go to page ${totalPages}`}
           >
             {totalPages}
@@ -93,7 +93,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="p-2 rounded-lg bg-sage-100 dark:bg-sage-800 hover:bg-sage-200 dark:hover:bg-sage-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="p-2 rounded-lg bg-interactive hover:bg-interactive-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label="Go to next page"
       >
         <ChevronRight className="w-5 h-5" aria-hidden="true" />

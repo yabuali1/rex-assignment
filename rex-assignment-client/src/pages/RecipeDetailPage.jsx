@@ -74,11 +74,11 @@ function RecipeDetailPage() {
   return (
     <div className="min-h-screen pb-16">
       {/* Back Navigation */}
-      <div className="bg-sage-100 dark:bg-sage-800 border-b border-sage-200 dark:border-sage-700">
+      <div className="bg-muted border-b border-default">
         <div className="container-custom py-4">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sage-600 dark:text-sage-300 hover:text-primary dark:hover:text-primary-light transition-colors"
+            className="inline-flex items-center gap-2 text-muted hover:text-primary dark:hover:text-primary-light transition-colors"
           >
             <ChevronLeft className="w-5 h-5" aria-hidden="true" />
             <span className="font-medium">Back to Search</span>
@@ -88,7 +88,7 @@ function RecipeDetailPage() {
 
       {/* Recipe Header */}
       <section className="relative">
-        <div className="aspect-[21/9] md:aspect-[3/1] overflow-hidden bg-sage-200 dark:bg-sage-800">
+        <div className="aspect-[21/9] md:aspect-[3/1] overflow-hidden bg-muted">
           {recipe.image ? (
             <img
               src={recipe.image}
@@ -97,7 +97,7 @@ function RecipeDetailPage() {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <ImageOff className="w-24 h-24 text-sage-300 dark:text-sage-600" aria-hidden="true" />
+              <ImageOff className="w-24 h-24 text-subtle" aria-hidden="true" />
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" aria-hidden="true" />
@@ -106,7 +106,7 @@ function RecipeDetailPage() {
         <div className="container-custom">
           <div className="relative -mt-24 md:-mt-32 mb-8">
             <div className="card p-6 md:p-8">
-              <h1 className="font-display text-3xl md:text-4xl font-bold text-sage-900 dark:text-sage-50 mb-4">
+              <h1 className="font-display text-3xl md:text-4xl font-bold text-default mb-4">
                 {recipe.title}
               </h1>
 
@@ -163,7 +163,7 @@ function RecipeDetailPage() {
 
               {/* Cuisines and Dish Types */}
               {(recipe.cuisines?.length > 0 || recipe.dishTypes?.length > 0) && (
-                <div className="flex flex-wrap gap-2 text-sm text-sage-500 dark:text-sage-400">
+                <div className="flex flex-wrap gap-2 text-sm text-subtle">
                   {recipe.cuisines?.map((cuisine, i) => (
                     <span key={i}>#{cuisine}</span>
                   ))}
@@ -202,7 +202,7 @@ function RecipeDetailPage() {
             {/* Summary */}
             {recipe.summary && (
               <div>
-                <h2 className="font-display text-2xl font-bold text-sage-900 dark:text-sage-50 mb-4">
+                <h2 className="font-display text-2xl font-bold text-default mb-4">
                   About This Recipe
                 </h2>
                 <div
@@ -215,7 +215,7 @@ function RecipeDetailPage() {
             {/* Instructions */}
             {recipe.instructions && (
               <div>
-                <h2 className="font-display text-2xl font-bold text-sage-900 dark:text-sage-50 mb-4">
+                <h2 className="font-display text-2xl font-bold text-default mb-4">
                   Instructions
                 </h2>
                 <div
@@ -227,7 +227,7 @@ function RecipeDetailPage() {
 
             {/* Source Link */}
             {recipe.sourceUrl && (
-              <div className="pt-6 border-t border-sage-200 dark:border-sage-700">
+              <div className="pt-6 border-t border-default">
                 <a
                   href={recipe.sourceUrl}
                   target="_blank"
@@ -246,7 +246,7 @@ function RecipeDetailPage() {
       {/* Loading overlay for exclusion updates */}
       {loading && recipe && (
         <div className="fixed inset-0 bg-black/20 dark:bg-black/40 flex items-center justify-center z-50" role="status">
-          <div className="bg-white dark:bg-sage-800 rounded-xl p-6 shadow-xl">
+          <div className="bg-surface rounded-xl p-6 shadow-xl">
             <LoadingSpinner size="small" message="Updating nutrition..." />
           </div>
         </div>

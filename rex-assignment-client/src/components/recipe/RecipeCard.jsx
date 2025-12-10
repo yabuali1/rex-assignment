@@ -13,7 +13,7 @@ function RecipeCard({ recipe }) {
         to={`/recipe/${id}`}
         aria-label={`View recipe: ${title}`}
       >
-        <div className="aspect-[4/3] overflow-hidden bg-sage-100 dark:bg-sage-700">
+        <div className="aspect-[4/3] overflow-hidden bg-muted">
           {image ? (
             <img
               src={image}
@@ -23,12 +23,12 @@ function RecipeCard({ recipe }) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <ImageOff className="w-16 h-16 text-sage-300 dark:text-sage-600" aria-hidden="true" />
+              <ImageOff className="w-16 h-16 text-subtle" aria-hidden="true" />
             </div>
           )}
         </div>
         <div className="p-4">
-          <h3 className="font-display text-lg font-semibold text-sage-900 dark:text-sage-50 line-clamp-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors">
+          <h3 className="font-display text-lg font-semibold text-default line-clamp-2 group-hover:text-primary dark:group-hover:text-primary-light transition-colors">
             {title}
           </h3>
           <div className="mt-3 flex items-center gap-2 text-sm text-primary dark:text-primary-light font-medium">

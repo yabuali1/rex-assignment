@@ -14,7 +14,7 @@ function IngredientList({ ingredients, excludedIngredients, onToggleExclude }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-display text-2xl font-bold text-sage-900 dark:text-sage-50">
+        <h2 className="font-display text-2xl font-bold text-default">
           Ingredients
         </h2>
         <span className="badge">
@@ -22,7 +22,7 @@ function IngredientList({ ingredients, excludedIngredients, onToggleExclude }) {
         </span>
       </div>
 
-      <p className="text-sm text-sage-600 dark:text-sage-400 mb-4">
+      <p className="text-sm text-subtle mb-4">
         Click on an ingredient to exclude it and see updated nutrition info.
       </p>
 
@@ -35,16 +35,16 @@ function IngredientList({ ingredients, excludedIngredients, onToggleExclude }) {
               <button
                 onClick={() => onToggleExclude(ingredient.name)}
                 className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center gap-3 group ${excluded
-                    ? 'bg-gray-50 dark:bg-gray-900/20 border-2 border-gray-200 dark:border-gray-800'
-                    : 'bg-sage-50 dark:bg-sage-800/50 border-2 border-transparent hover:border-primary/30'
+                  ? 'bg-gray-50 dark:bg-gray-900/20 border-2 border-gray-200 dark:border-gray-800'
+                  : 'bg-muted border-2 border-transparent hover:border-primary/30'
                   }`}
                 aria-pressed={excluded}
                 aria-label={`${excluded ? 'Include' : 'Exclude'} ${ingredient.name}`}
               >
                 <span
                   className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${excluded
-                      ? 'bg-gray-500 border-gray-500'
-                      : 'border-sage-300 dark:border-sage-600 group-hover:border-primary'
+                    ? 'bg-gray-500 border-gray-500'
+                    : 'border-subtle group-hover:border-primary'
                     }`}
                   aria-hidden="true"
                 >
@@ -53,7 +53,7 @@ function IngredientList({ ingredients, excludedIngredients, onToggleExclude }) {
                   )}
                 </span>
 
-                <span className={`flex-grow ${excluded ? 'line-through text-sage-400 dark:text-sage-500' : 'text-sage-700 dark:text-sage-300'}`}>
+                <span className={`flex-grow ${excluded ? 'line-through text-subtle' : 'text-muted'}`}>
                   {ingredient.original || `${ingredient.amount} ${ingredient.unit} ${ingredient.name}`}
                 </span>
 
