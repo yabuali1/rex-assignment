@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom'
 import { ChevronRight, ImageOff } from 'lucide-react'
+import { getImageUrl, IMAGE_SIZES } from '../../utils/imageUtils'
 
 function RecipeCard({ recipe }) {
   const { id, title, image } = recipe
+
+  // Use large size (480x360) for better quality in cards
+  const optimizedImage = getImageUrl(image, IMAGE_SIZES.LARGE)
 
   return (
     <div
@@ -16,7 +20,7 @@ function RecipeCard({ recipe }) {
         <div className="aspect-[4/3] overflow-hidden bg-muted">
           {image ? (
             <img
-              src={image}
+              src={optimizedImage}
               alt=""
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               loading="lazy"

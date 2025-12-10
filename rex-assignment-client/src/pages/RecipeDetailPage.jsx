@@ -6,6 +6,7 @@ import ErrorMessage from '../components/common/ErrorMessage'
 import IngredientList from '../components/recipe/IngredientList'
 import NutritionPanel from '../components/recipe/NutritionPanel'
 import { useRecipeDetail } from '../hooks/useRecipes'
+import { getImageUrl, IMAGE_SIZES } from '../utils/imageUtils'
 
 function RecipeDetailPage() {
   const { id } = useParams()
@@ -71,6 +72,9 @@ function RecipeDetailPage() {
     return null
   }
 
+  // Use full resolution for detail page hero image
+  const heroImage = getImageUrl(recipe.image, IMAGE_SIZES.FULL)
+
   return (
     <div className="min-h-screen pb-16">
       {/* Back Navigation */}
@@ -91,7 +95,7 @@ function RecipeDetailPage() {
         <div className="aspect-[21/9] md:aspect-[3/1] overflow-hidden bg-muted">
           {recipe.image ? (
             <img
-              src={recipe.image}
+              src={heroImage}
               alt={recipe.title}
               className="w-full h-full object-cover object-center"
             />
