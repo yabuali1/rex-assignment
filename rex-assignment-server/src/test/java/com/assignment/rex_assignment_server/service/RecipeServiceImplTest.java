@@ -225,91 +225,6 @@ class RecipeServiceImplTest {
     }
 
     @Nested
-    @DisplayName("getRecipeWithExcludedIngredients")
-    class GetRecipeWithExcludedIngredientsTests {
-
-        @Test
-        @DisplayName("should return original recipe when no ingredients excluded")
-        void shouldReturnOriginalRecipeWhenNoExclusions() {
-            // Arrange
-            RecipeDetailResponse expectedResponse = createMockRecipeDetailWithNutrition();
-
-            when(restClient.get()).thenReturn(requestHeadersUriSpec);
-            when(requestHeadersUriSpec.uri(anyString(), eq(123L))).thenReturn(requestHeadersSpec);
-            when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-            when(responseSpec.body(RecipeDetailResponse.class)).thenReturn(expectedResponse);
-
-            // Act
-            RecipeDetailResponse result = recipeService.getRecipeWithExcludedIngredients(123L, null);
-
-            // Assert
-            assertThat(result).isNotNull();
-            assertThat(result.getExtendedIngredients()).hasSize(3);
-        }
-
-        @Test
-        @DisplayName("should return original recipe when empty exclusion list")
-        void shouldReturnOriginalRecipeWhenEmptyExclusionList() {
-            // Arrange
-            RecipeDetailResponse expectedResponse = createMockRecipeDetailWithNutrition();
-
-            when(restClient.get()).thenReturn(requestHeadersUriSpec);
-            when(requestHeadersUriSpec.uri(anyString(), eq(123L))).thenReturn(requestHeadersSpec);
-            when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-            when(responseSpec.body(RecipeDetailResponse.class)).thenReturn(expectedResponse);
-
-            // Act
-            RecipeDetailResponse result = recipeService.getRecipeWithExcludedIngredients(123L, List.of());
-
-            // Assert
-            assertThat(result).isNotNull();
-            assertThat(result.getExtendedIngredients()).hasSize(3);
-        }
-
-        @Test
-        @DisplayName("should reduce nutrition proportionally when ingredients excluded")
-        void shouldReduceNutritionWhenIngredientsExcluded() {
-            // Arrange
-            RecipeDetailResponse mockResponse = createMockRecipeDetailWithNutrition();
-            Double originalCalories = mockResponse.getNutrition().getNutrients().get(0).getAmount();
-
-            when(restClient.get()).thenReturn(requestHeadersUriSpec);
-            when(requestHeadersUriSpec.uri(anyString(), eq(123L))).thenReturn(requestHeadersSpec);
-            when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-            when(responseSpec.body(RecipeDetailResponse.class)).thenReturn(mockResponse);
-
-            // Act - exclude 1 of 3 ingredients (33% reduction)
-            RecipeDetailResponse result = recipeService.getRecipeWithExcludedIngredients(
-                    123L, List.of("pasta"));
-
-            // Assert
-            assertThat(result).isNotNull();
-            Double newCalories = result.getNutrition().getNutrients().get(0).getAmount();
-            // Should be reduced by approximately 33%
-            assertThat(newCalories).isLessThan(originalCalories);
-        }
-
-        @Test
-        @DisplayName("should keep all ingredients in list (visual exclusion only)")
-        void shouldKeepAllIngredientsInList() {
-            // Arrange
-            RecipeDetailResponse mockResponse = createMockRecipeDetailWithNutrition();
-
-            when(restClient.get()).thenReturn(requestHeadersUriSpec);
-            when(requestHeadersUriSpec.uri(anyString(), eq(123L))).thenReturn(requestHeadersSpec);
-            when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-            when(responseSpec.body(RecipeDetailResponse.class)).thenReturn(mockResponse);
-
-            // Act
-            RecipeDetailResponse result = recipeService.getRecipeWithExcludedIngredients(
-                    123L, List.of("pasta"));
-
-            // Assert - all ingredients should still be in the list
-            assertThat(result.getExtendedIngredients()).hasSize(3);
-        }
-    }
-
-    @Nested
     @DisplayName("getAutocompleteSuggestions")
     class GetAutocompleteSuggestionsTests {
 
@@ -416,41 +331,6 @@ class RecipeServiceImplTest {
                 .vegetarian(false)
                 .vegan(false)
                 .glutenFree(false)
-                .healthScore(65)
-                .build();
-    }
-
-    private RecipeDetailResponse createMockRecipeDetailWithNutrition() {
-        Ingredient ing1 = Ingredient.builder().id(1L).name("pasta").original("200g pasta").build();
-        Ingredient ing2 = Ingredient.builder().id(2L).name("eggs").original("2 eggs").build();
-        Ingredient ing3 = Ingredient.builder().id(3L).name("cheese").original("100g parmesan").build();
-
-        Nutrient calories = Nutrient.builder()
-                .name("Calories")
-                .amount(500.0)
-                .unit("kcal")
-                .percentOfDailyNeeds(25.0)
-                .build();
-
-        Nutrient protein = Nutrient.builder()
-                .name("Protein")
-                .amount(20.0)
-                .unit("g")
-                .percentOfDailyNeeds(40.0)
-                .build();
-
-        NutritionInfo nutrition = NutritionInfo.builder()
-                .nutrients(Arrays.asList(calories, protein))
-                .build();
-
-        return RecipeDetailResponse.builder()
-                .id(123L)
-                .title("Pasta Carbonara")
-                .image("https://example.com/pasta.jpg")
-                .servings(4)
-                .readyInMinutes(30)
-                .extendedIngredients(Arrays.asList(ing1, ing2, ing3))
-                .nutrition(nutrition)
                 .healthScore(65)
                 .build();
     }

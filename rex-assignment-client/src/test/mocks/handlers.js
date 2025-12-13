@@ -50,6 +50,45 @@ export const mockRecipeDetail = {
       { name: 'Carbohydrates', amount: 65, unit: 'g', percentOfDailyNeeds: 21.7 },
       { name: 'Fat', amount: 18, unit: 'g', percentOfDailyNeeds: 27.7 },
     ],
+    // Per-ingredient nutrition data (used for client-side exclusion calculations)
+    ingredients: [
+      {
+        id: 1,
+        name: 'pasta',
+        amount: 400,
+        unit: 'g',
+        nutrients: [
+          { name: 'Calories', amount: 350, unit: 'kcal' },
+          { name: 'Protein', amount: 12, unit: 'g' },
+          { name: 'Carbohydrates', amount: 60, unit: 'g' },
+          { name: 'Fat', amount: 2, unit: 'g' },
+        ],
+      },
+      {
+        id: 2,
+        name: 'eggs',
+        amount: 4,
+        unit: '',
+        nutrients: [
+          { name: 'Calories', amount: 100, unit: 'kcal' },
+          { name: 'Protein', amount: 8, unit: 'g' },
+          { name: 'Carbohydrates', amount: 1, unit: 'g' },
+          { name: 'Fat', amount: 8, unit: 'g' },
+        ],
+      },
+      {
+        id: 3,
+        name: 'parmesan',
+        amount: 100,
+        unit: 'g',
+        nutrients: [
+          { name: 'Calories', amount: 100, unit: 'kcal' },
+          { name: 'Protein', amount: 5, unit: 'g' },
+          { name: 'Carbohydrates', amount: 4, unit: 'g' },
+          { name: 'Fat', amount: 8, unit: 'g' },
+        ],
+      },
+    ],
   },
   dishTypes: ['main course', 'dinner'],
   cuisines: ['Italian'],
@@ -62,17 +101,17 @@ export const mockAutocompleteSuggestions = [
   { id: 3, title: 'Pasta Bolognese' },
 ]
 
-// MSW Handlers - ORDER MATTERS! More specific routes first
+// MSW Handlers - Use wildcard (*) to match any origin
 export const handlers = [
-  // Health check - MUST be before /:id route
-  http.get('/api/recipes/health', () => {
+  // Health check
+  http.get('*/api/recipes/health', () => {
     return new HttpResponse('Recipe API is running', {
       headers: { 'Content-Type': 'text/plain' },
     })
   }),
 
   // Search recipes
-  http.get('/api/recipes/search', ({ request }) => {
+  http.get('*/api/recipes/search', ({ request }) => {
     const url = new URL(request.url)
     const query = url.searchParams.get('query') || ''
     const offset = parseInt(url.searchParams.get('offset') || '0')
@@ -80,9 +119,9 @@ export const handlers = [
 
     // Filter recipes based on query
     const filteredRecipes = query
-      ? mockRecipes.filter(r => 
-          r.title.toLowerCase().includes(query.toLowerCase())
-        )
+      ? mockRecipes.filter(r =>
+        r.title.toLowerCase().includes(query.toLowerCase())
+      )
       : mockRecipes
 
     return HttpResponse.json({
@@ -93,8 +132,8 @@ export const handlers = [
     })
   }),
 
-  // Autocomplete suggestions - MUST be before /:id route
-  http.get('/api/recipes/autocomplete', ({ request }) => {
+  // Autocomplete suggestions
+  http.get('*/api/recipes/autocomplete', ({ request }) => {
     const url = new URL(request.url)
     const query = url.searchParams.get('query') || ''
     const number = parseInt(url.searchParams.get('number') || '5')
@@ -110,34 +149,12 @@ export const handlers = [
     return HttpResponse.json(filtered)
   }),
 
-  // Get recipe with exclusions - MUST be before /:id route
-  http.get('/api/recipes/:id/exclude', ({ params, request }) => {
-    const id = parseInt(params.id)
-    const url = new URL(request.url)
-    const excluded = url.searchParams.getAll('excludeIngredients')
+  // Get recipe by ID - Use regex to match /api/recipes/:id (but not other paths)
+  http.get(/\/api\/recipes\/(\d+)$/, ({ params }) => {
+    // Extract the ID from the URL
+    const url = params[0] || '1'
+    const id = parseInt(url)
 
-    const recipe = { ...mockRecipeDetail, id }
-
-    // If ingredients are excluded, reduce nutrition values
-    if (excluded.length > 0) {
-      const reductionRatio = excluded.length / recipe.extendedIngredients.length
-      recipe.nutrition = {
-        ...recipe.nutrition,
-        nutrients: recipe.nutrition.nutrients.map(n => ({
-          ...n,
-          amount: Math.round(n.amount * (1 - reductionRatio) * 100) / 100,
-          percentOfDailyNeeds: Math.round(n.percentOfDailyNeeds * (1 - reductionRatio) * 100) / 100,
-        })),
-      }
-    }
-
-    return HttpResponse.json(recipe)
-  }),
-
-  // Get recipe by ID - This should be LAST among /api/recipes/* routes
-  http.get('/api/recipes/:id', ({ params }) => {
-    const id = parseInt(params.id)
-    
     if (id === 999) {
       return HttpResponse.json(
         { message: 'Recipe not found' },
