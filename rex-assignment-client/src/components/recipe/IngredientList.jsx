@@ -1,14 +1,8 @@
 import { X } from 'lucide-react'
 
-function IngredientList({ ingredients, excludedIngredients, onToggleExclude }) {
+function IngredientList({ ingredients, isIngredientExcluded, onToggleExclude }) {
   if (!ingredients || ingredients.length === 0) {
     return null
-  }
-
-  const isExcluded = (ingredient) => {
-    return excludedIngredients.some(
-      ex => ingredient.name?.toLowerCase().includes(ex.toLowerCase())
-    )
   }
 
   return (
@@ -28,12 +22,12 @@ function IngredientList({ ingredients, excludedIngredients, onToggleExclude }) {
 
       <ul className="space-y-2" role="list" aria-label="Recipe ingredients">
         {ingredients.map((ingredient, index) => {
-          const excluded = isExcluded(ingredient)
+          const excluded = isIngredientExcluded(ingredient)
 
           return (
             <li key={ingredient.id || index}>
               <button
-                onClick={() => onToggleExclude(ingredient.name)}
+                onClick={() => onToggleExclude(ingredient)}
                 className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center gap-3 group ${excluded
                   ? 'bg-gray-50 dark:bg-gray-900/20 border-2 border-gray-200 dark:border-gray-800'
                   : 'bg-muted border-2 border-transparent hover:border-primary/30'

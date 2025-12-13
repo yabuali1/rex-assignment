@@ -64,26 +64,10 @@ export function useRecipeDetail() {
     }
   }, [])
 
-  const fetchWithExclusions = useCallback(async (id, excludedIngredients) => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      const data = await recipeApi.getRecipeWithExclusions(id, excludedIngredients)
-      setRecipe(data)
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update recipe.')
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
   return {
     recipe,
     loading,
     error,
     fetchRecipe,
-    fetchWithExclusions,
   }
 }
-

@@ -25,11 +25,6 @@ public interface RecipeService {
     RecipeDetailResponse getRecipeById(Long id);
 
     /**
-     * Get recipe with recalculated nutrition after excluding ingredients
-     */
-    RecipeDetailResponse getRecipeWithExcludedIngredients(Long id, List<String> excludedIngredients);
-
-    /**
      * Get autocomplete suggestions for recipe search
      */
     List<AutocompleteResult> getAutocompleteSuggestions(String query, int number);

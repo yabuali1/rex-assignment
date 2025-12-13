@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ChevronLeft, Clock, Users, Heart, ImageOff, ExternalLink } from 'lucide-react'
 import LoadingSpinner from '../components/common/LoadingSpinner'
@@ -10,43 +10,125 @@ import { getImageUrl, IMAGE_SIZES } from '../utils/imageUtils'
 
 function RecipeDetailPage() {
   const { id } = useParams()
-  const { recipe, loading, error, fetchRecipe, fetchWithExclusions } = useRecipeDetail()
-  const [excludedIngredients, setExcludedIngredients] = useState([])
+  const { recipe, loading, error, fetchRecipe } = useRecipeDetail()
+  const [excludedIngredientIds, setExcludedIngredientIds] = useState(new Set())
 
   useEffect(() => {
     if (id) {
       fetchRecipe(id)
-      setExcludedIngredients([])
+      setExcludedIngredientIds(new Set())
     }
   }, [id, fetchRecipe])
 
-  const handleToggleExclude = useCallback((ingredientName) => {
-    setExcludedIngredients(prev => {
-      const isCurrentlyExcluded = prev.some(
-        ex => ingredientName.toLowerCase().includes(ex.toLowerCase()) ||
-          ex.toLowerCase().includes(ingredientName.toLowerCase())
-      )
+  /**
+   * Toggle ingredient exclusion - instant, no API call needed
+   */
+  const handleToggleExclude = useCallback((ingredient) => {
+    const ingredientId = ingredient.id
 
-      let newExcluded
-      if (isCurrentlyExcluded) {
-        newExcluded = prev.filter(
-          ex => !ingredientName.toLowerCase().includes(ex.toLowerCase()) &&
-            !ex.toLowerCase().includes(ingredientName.toLowerCase())
-        )
+    setExcludedIngredientIds(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(ingredientId)) {
+        newSet.delete(ingredientId)
       } else {
-        newExcluded = [...prev, ingredientName]
+        newSet.add(ingredientId)
       }
-
-      // Fetch updated nutrition
-      if (newExcluded.length > 0) {
-        fetchWithExclusions(id, newExcluded)
-      } else {
-        fetchRecipe(id)
-      }
-
-      return newExcluded
+      return newSet
     })
-  }, [id, fetchRecipe, fetchWithExclusions])
+  }, [])
+
+  /**
+   * Build a map of ingredient nutrition from the recipe's nutrition.ingredients array
+   * This data comes from Spoonacular when we fetch the recipe with includeNutrition=true
+   */
+  const ingredientNutritionMap = useMemo(() => {
+    const map = {}
+    if (recipe?.nutrition?.ingredients) {
+      recipe.nutrition.ingredients.forEach(ing => {
+        if (ing.id) {
+          map[ing.id] = ing
+        }
+        // Also map by name for matching since IDs might differ
+        if (ing.name) {
+          map[ing.name.toLowerCase()] = ing
+        }
+      })
+    }
+    return map
+  }, [recipe?.nutrition?.ingredients])
+
+  /**
+   * Calculate adjusted nutrition by subtracting excluded ingredients
+   * Uses the nutrition.ingredients data already in the recipe response
+   */
+  const adjustedNutrition = useMemo(() => {
+    if (!recipe?.nutrition?.nutrients) {
+      return recipe?.nutrition || null
+    }
+
+    // If no exclusions, return original nutrition
+    if (excludedIngredientIds.size === 0) {
+      return recipe.nutrition
+    }
+
+    // Create a map of nutrient adjustments to subtract
+    const nutrientAdjustments = {}
+
+    // For each excluded ingredient, find its nutrition and sum it up
+    excludedIngredientIds.forEach(ingredientId => {
+      // Try to find nutrition by ID first
+      let ingredientNutrition = ingredientNutritionMap[ingredientId]
+
+      // If not found by ID, try to match by name from extendedIngredients
+      if (!ingredientNutrition && recipe.extendedIngredients) {
+        const ingredient = recipe.extendedIngredients.find(ing => ing.id === ingredientId)
+        if (ingredient?.name) {
+          ingredientNutrition = ingredientNutritionMap[ingredient.name.toLowerCase()]
+        }
+      }
+
+      if (ingredientNutrition?.nutrients) {
+        ingredientNutrition.nutrients.forEach(nutrient => {
+          const key = nutrient.name.toLowerCase()
+          if (!nutrientAdjustments[key]) {
+            nutrientAdjustments[key] = 0
+          }
+          nutrientAdjustments[key] += nutrient.amount || 0
+        })
+      }
+    })
+
+    // Create adjusted nutrients array
+    const adjustedNutrients = recipe.nutrition.nutrients.map(nutrient => {
+      const key = nutrient.name.toLowerCase()
+      const adjustment = nutrientAdjustments[key] || 0
+      const adjustedAmount = Math.max(0, (nutrient.amount || 0) - adjustment)
+
+      // Calculate adjusted percent of daily needs proportionally
+      let adjustedPercent = nutrient.percentOfDailyNeeds || 0
+      if (nutrient.amount && nutrient.amount > 0 && adjustedAmount !== nutrient.amount) {
+        adjustedPercent = (adjustedAmount / nutrient.amount) * (nutrient.percentOfDailyNeeds || 0)
+      }
+
+      return {
+        ...nutrient,
+        amount: Math.round(adjustedAmount * 100) / 100,
+        percentOfDailyNeeds: Math.round(adjustedPercent * 100) / 100,
+      }
+    })
+
+    return {
+      ...recipe.nutrition,
+      nutrients: adjustedNutrients,
+    }
+  }, [recipe?.nutrition, recipe?.extendedIngredients, excludedIngredientIds, ingredientNutritionMap])
+
+  /**
+   * Check if an ingredient is excluded
+   */
+  const isIngredientExcluded = useCallback((ingredient) => {
+    return excludedIngredientIds.has(ingredient.id)
+  }, [excludedIngredientIds])
 
   if (loading && !recipe) {
     return (
@@ -189,7 +271,7 @@ function RecipeDetailPage() {
             <div className="sticky top-24">
               <IngredientList
                 ingredients={recipe.extendedIngredients}
-                excludedIngredients={excludedIngredients}
+                isIngredientExcluded={isIngredientExcluded}
                 onToggleExclude={handleToggleExclude}
               />
             </div>
@@ -199,8 +281,8 @@ function RecipeDetailPage() {
           <div className="lg:col-span-2 space-y-8">
             {/* Nutrition */}
             <NutritionPanel
-              nutrition={recipe.nutrition}
-              hasExclusions={excludedIngredients.length > 0}
+              nutrition={adjustedNutrition}
+              hasExclusions={excludedIngredientIds.size > 0}
             />
 
             {/* Summary */}
@@ -246,15 +328,6 @@ function RecipeDetailPage() {
           </div>
         </div>
       </section>
-
-      {/* Loading overlay for exclusion updates */}
-      {loading && recipe && (
-        <div className="fixed inset-0 bg-black/20 dark:bg-black/40 flex items-center justify-center z-50" role="status">
-          <div className="bg-surface rounded-xl p-6 shadow-xl">
-            <LoadingSpinner size="small" message="Updating nutrition..." />
-          </div>
-        </div>
-      )}
     </div>
   )
 }

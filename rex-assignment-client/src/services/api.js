@@ -58,17 +58,6 @@ export const recipeApi = {
   },
 
   /**
-   * Get recipe with excluded ingredients
-   */
-  getRecipeWithExclusions: async (id, excludedIngredients = []) => {
-    const params = new URLSearchParams()
-    excludedIngredients.forEach(ing => params.append('excludeIngredients', ing))
-
-    const response = await api.get(`/recipes/${id}/exclude?${params.toString()}`)
-    return response.data
-  },
-
-  /**
    * Get autocomplete suggestions
    */
   getAutocompleteSuggestions: async (query, number = 5) => {

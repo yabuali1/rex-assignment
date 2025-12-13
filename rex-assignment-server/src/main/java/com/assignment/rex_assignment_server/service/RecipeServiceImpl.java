@@ -10,7 +10,6 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,73 +86,6 @@ public class RecipeServiceImpl implements RecipeService {
             }
             throw new SpoonacularApiException("Failed to fetch recipe: " + e.getMessage());
         }
-    }
-
-    @Override
-    public RecipeDetailResponse getRecipeWithExcludedIngredients(Long id, List<String> excludedIngredients) {
-        log.debug("Fetching recipe {} with excluded ingredients: {}", id, excludedIngredients);
-
-        RecipeDetailResponse recipe = getRecipeById(id);
-
-        if (excludedIngredients == null || excludedIngredients.isEmpty()) {
-            return recipe;
-        }
-
-        List<Ingredient> originalIngredients = recipe.getExtendedIngredients();
-        if (originalIngredients == null) {
-            return recipe;
-        }
-
-        // Count excluded ingredients for nutrition calculation
-        List<String> excludedLower = excludedIngredients.stream()
-                .map(String::toLowerCase)
-                .collect(Collectors.toList());
-
-        long excludedCount = originalIngredients.stream()
-                .filter(ingredient -> {
-                    String name = ingredient.getName();
-                    if (name == null)
-                        return false;
-                    return excludedLower.stream()
-                            .anyMatch(excluded -> name.toLowerCase().contains(excluded));
-                })
-                .count();
-
-        int totalCount = originalIngredients.size();
-
-        // Calculate nutrition reduction based on excluded ingredients
-        // This is a simplified proportional calculation
-        if (totalCount > 0 && excludedCount > 0 && recipe.getNutrition() != null) {
-            double reductionRatio = (double) excludedCount / totalCount;
-            NutritionInfo nutrition = recipe.getNutrition();
-
-            // Adjust all nutrients in the array proportionally
-            if (nutrition.getNutrients() != null) {
-                nutrition.getNutrients().forEach(nutrient -> {
-                    if (nutrient.getAmount() != null) {
-                        double adjustedAmount = nutrient.getAmount() * (1 - reductionRatio);
-                        nutrient.setAmount(Math.round(adjustedAmount * 100.0) / 100.0);
-                    }
-
-                    // Also adjust percent of daily needs
-                    if (nutrient.getPercentOfDailyNeeds() != null) {
-                        double adjustedPercent = nutrient.getPercentOfDailyNeeds() * (1 - reductionRatio);
-                        nutrient.setPercentOfDailyNeeds(Math.round(adjustedPercent * 100.0) / 100.0);
-                    }
-                });
-            }
-
-            log.info("Reduced nutrition by {}% due to {} excluded ingredients",
-                    Math.round(reductionRatio * 100), excludedCount);
-
-            recipe.setNutrition(nutrition);
-        }
-
-        // Keep all ingredients in the list - frontend handles visual exclusion styling
-        log.info("Recipe {} has {} total ingredients, {} excluded for nutrition calculation",
-                id, totalCount, excludedCount);
-
-        return recipe;
     }
 
     @Override

@@ -67,25 +67,6 @@ public class RecipeController {
     }
 
     /**
-     * Get recipe with recalculated nutrition after excluding ingredients
-     * 
-     * @param id                 Recipe ID
-     * @param excludeIngredients List of ingredient names to exclude
-     * @return Recipe with updated nutrition information
-     */
-    @GetMapping("/{id}/exclude")
-    public ResponseEntity<RecipeDetailResponse> getRecipeWithExclusions(
-            @PathVariable Long id,
-            @RequestParam(required = false) List<String> excludeIngredients) {
-        log.info("Get recipe with exclusions - id: {}, excluded: {}", id, excludeIngredients);
-
-        RecipeDetailResponse response = recipeService.getRecipeWithExcludedIngredients(
-                id, excludeIngredients);
-
-        return ResponseEntity.ok(response);
-    }
-
-    /**
      * Get autocomplete suggestions for recipe search
      * 
      * @param query  Search query string
